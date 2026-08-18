@@ -83,7 +83,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.fivedive.chat"
+        applicationId = "com.fivedive.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
