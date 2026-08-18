@@ -98,18 +98,11 @@ const _modeTokens = <String>{
   'plus',
 };
 
-/// 5dive change: labels that must not read as an upstream trademark.
-const _displayNameOverrides = <String, String>{'buzz': '5dive'};
-
 /// Display label for a pair, derived from its light member: strips the
 /// mode-specific tokens so `github-light` reads as "Github" and stands for both
 /// halves. Mirrors desktop's `pairedThemeLabel`.
 String pairedThemeLabel(String lightName) {
-  // 5dive change: the default pair's id is `buzz`, an upstream trademark that
-  // capitalisation would put straight into the theme picker. Overriding the
-  // label (rather than renaming the id) keeps stored preferences and the
-  // upstream theme catalog untouched, so this stays a one-line rebase.
-  final override = _displayNameOverrides[lightName];
+  final override = themeDisplayNameOverrides[lightName];
   if (override != null) return override;
 
   final stripped = lightName
