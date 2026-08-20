@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../shared/animated_avatar.dart';
+import '../../shared/mentions/agent_identity_provider.dart';
 import '../../shared/relay/relay.dart';
 import '../../shared/theme/theme.dart';
 import '../../shared/utils/string_utils.dart';
@@ -55,6 +56,11 @@ class UserProfileSheet extends HookConsumerWidget {
         ref.read(userCacheProvider.notifier).get(pk);
     final presenceMap = ref.watch(presenceCacheProvider);
     final presence = presenceMap[pk] ?? 'offline';
+    final showsPresence = showsPresenceDot(
+      agentPubkeys: ref.watch(knownAgentPubkeysProvider),
+      pubkey: pk,
+      profileIdentifiesAgent: profile?.ownerPubkey != null,
+    );
     final statusCache = ref.watch(userStatusCacheProvider);
     final userStatus = statusCache[pk];
 
@@ -154,12 +160,18 @@ class UserProfileSheet extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: -(Grid.xl / 2),
-                            child: _ProfilePresenceChip(presence: presence),
-                          ),
+                          if (showsPresence)
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: -(Grid.xl / 2),
+                              child: _ProfilePresenceChip(
+                                key: const ValueKey(
+                                  'profile-sheet-presence-chip',
+                                ),
+                                presence: presence,
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -325,7 +337,7 @@ void _showProfileCopyToast(BuildContext context) {
 /// reflects its owner's availability but does not allow another user to change
 /// it.
 class _ProfilePresenceChip extends StatelessWidget {
-  const _ProfilePresenceChip({required this.presence});
+  const _ProfilePresenceChip({super.key, required this.presence});
 
   final String presence;
 
