@@ -4,7 +4,7 @@ run-name: Build sideloadable debug APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, dive-3648-mobile-latest]
+    branches: [main]
     paths:
       - mobile/**
       - .github/workflows/sideload-apk.yml
