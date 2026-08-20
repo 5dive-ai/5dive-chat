@@ -102,7 +102,7 @@ void main() {
             'prompt': [
               {
                 'content':
-                    '[5dive event: stream message]\n'
+                    '[Buzz event: stream message]\n'
                     'Content: @claude can you do that again?\n\n'
                     '[Channel]\n'
                     '#activity-test-channel',
