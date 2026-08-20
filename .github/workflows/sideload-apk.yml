@@ -4,7 +4,10 @@ run-name: Build sideloadable debug APK
 on:
   workflow_dispatch:
   push:
-    branches: [dive-3578-rebrand]
+    branches: [main]
+    paths:
+      - mobile/**
+      - .github/workflows/sideload-apk.yml
 
 concurrency:
   group: sideload-apk-${{ github.ref }}
@@ -54,3 +57,58 @@ jobs:
             --title "5dive mobile (sideload debug) - $tag" \
             --notes "Debug APK of the 5dive-branded mobile app. Android only. applicationId com.fivedive.app - installs alongside any existing Buzz app."
           gh release view "$tag" --repo "${{ github.repository }}" --json assets --jq '.assets[].url'
+      # DIVE-3648: the per-version release above is history; a blog post or a QR code
+      # needs ONE url that never goes stale. Rolling tag `mobile-latest`, asset name
+      # always `5dive.apk`, same pattern as sprig-latest in this repo. It stays
+      # prerelease=true on purpose so /releases/latest keeps resolving to the CLI.
+      - name: Update the rolling mobile-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          RUN: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          tag="mobile-latest"
+          title="5dive mobile (sideload debug, rolling)"
+          notes="Rolling debug APK of the 5dive-branded mobile app — this tag always carries the newest cut, under the stable asset name \`5dive.apk\`.
+
+          Permanent download: https://github.com/${REPO}/releases/download/${tag}/5dive.apk
+
+          Android only. applicationId \`com.fivedive.app\`, so it installs alongside any existing Buzz app. Same bytes as \`mobile-sideload-5dive-${RUN}\` (\`${SHA}\`), which is kept as the versioned history."
+
+          cp "5dive-${RUN}.apk" 5dive.apk
+
+          # `gh release edit` exits 1 with "release not found" the first time, and a
+          # fork inherits no releases — so create-then-edit. On every later cut the
+          # tag is force-moved to the sha we just built, the release is reused, and
+          # the asset is clobbered in place so the download URL never changes.
+          if gh release view "$tag" --repo "$REPO" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/${REPO}/git/refs/tags/${tag}" -f sha="$SHA" -F force=true >/dev/null
+            gh release edit "$tag" --repo "$REPO" --prerelease --title "$title" --notes "$notes"
+          else
+            gh release create "$tag" --repo "$REPO" --target "$SHA" --prerelease --title "$title" --notes "$notes"
+          fi
+          gh release upload "$tag" 5dive.apk --repo "$REPO" --clobber
+
+          gh release view "$tag" --repo "$REPO" --json isPrerelease,tagName,assets \
+            --jq '{tag: .tagName, prerelease: .isPrerelease, assets: [.assets[].name]}'
+      # The whole point of the rolling tag is a link that works on a phone with no
+      # GitHub login. Assert that, rather than assuming the upload implies it.
+      - name: Assert the permanent URL resolves anonymously
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          url="https://github.com/${REPO}/releases/download/mobile-latest/5dive.apk"
+          for attempt in 1 2 3 4 5; do
+            read -r code type < <(curl -sIL --max-time 60 -o /dev/null \
+              -w '%{http_code} %{content_type}\n' "$url")
+            echo "attempt ${attempt}: ${code} ${type:-<none>} ${url}"
+            if [ "$code" = "200" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::${url} never returned 200 anonymously (last: ${code})"
+          exit 1
