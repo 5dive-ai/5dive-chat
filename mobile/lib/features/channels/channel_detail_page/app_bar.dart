@@ -129,6 +129,11 @@ class _DmAppBarTitle extends ConsumerWidget {
         (channel.participants.isNotEmpty
             ? channel.participants.first[0].toUpperCase()
             : '?');
+    final showsPresence = showsPresenceDot(
+      agentPubkeys: ref.watch(agentMentionPubkeysProvider(channel.id)),
+      pubkey: otherPubkey,
+      profileIdentifiesAgent: profile?.ownerPubkey != null,
+    );
     final presenceLabel = switch (presence) {
       'online' => 'Online',
       'away' => 'Away',
@@ -158,22 +163,25 @@ class _DmAppBarTitle extends ConsumerWidget {
               ),
             ),
           ),
-          badge: Center(
-            child: FractionallySizedBox(
-              widthFactor: _dmPresenceDotRatio,
-              heightFactor: _dmPresenceDotRatio,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: switch (presence) {
-                    'online' => context.appColors.success,
-                    'away' => context.appColors.warning,
-                    _ => context.colors.outline,
-                  },
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ),
+          badge: showsPresence
+              ? Center(
+                  key: const ValueKey('dm-header-presence-dot'),
+                  child: FractionallySizedBox(
+                    widthFactor: _dmPresenceDotRatio,
+                    heightFactor: _dmPresenceDotRatio,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: switch (presence) {
+                          'online' => context.appColors.success,
+                          'away' => context.appColors.warning,
+                          _ => context.colors.outline,
+                        },
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                )
+              : null,
         ),
         const SizedBox(width: Grid.xxs),
         Expanded(
@@ -202,13 +210,14 @@ class _DmAppBarTitle extends ConsumerWidget {
                   ],
                 ],
               ),
-              Text(
-                presenceLabel,
-                key: const ValueKey('dm-header-presence'),
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: context.colors.onSurfaceVariant,
+              if (showsPresence)
+                Text(
+                  presenceLabel,
+                  key: const ValueKey('dm-header-presence'),
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: context.colors.onSurfaceVariant,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
