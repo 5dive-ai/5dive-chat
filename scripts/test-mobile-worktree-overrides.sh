@@ -63,7 +63,7 @@ out="$("$wt/scripts/mobile-worktree-overrides.sh")"
 ios="$wt/mobile/ios/Flutter/WorktreeOverrides.xcconfig"
 android="$wt/mobile/android/worktree.properties"
 [[ -f "$ios" && -f "$android" ]] || fail "worktree must write both override files"
-grep -q '^BUNDLE_IDENTIFIER = com\.buzz\.buzzMobile\.feature-work-1$' "$ios" \
+grep -q '^BUNDLE_IDENTIFIER = com\.fivedive\.chat\.feature-work-1$' "$ios" \
   && pass "iOS bundle identifier keys to the sanitized worktree directory name" \
   || fail "iOS bundle identifier must key to the worktree dir, got: $(cat "$ios")"
 grep -q '^APP_DISPLAY_NAME = 5dive (Fix_Thing-2)$' "$ios" \
@@ -82,7 +82,7 @@ printf '%s' "$out" | grep -q 'Worktree Feature_Work-1' \
 # ── Branch switch in the same worktree: identity stable, label follows ───────
 git -C "$wt" checkout -q -b "another/branch-name"
 "$wt/scripts/mobile-worktree-overrides.sh" > /dev/null
-grep -q '^BUNDLE_IDENTIFIER = com\.buzz\.buzzMobile\.feature-work-1$' "$ios" \
+grep -q '^BUNDLE_IDENTIFIER = com\.fivedive\.chat\.feature-work-1$' "$ios" \
   && grep -q '^applicationIdSuffix=\.feature_work_1$' "$android" \
   && pass "branch switch keeps the install identity stable (per worktree)" \
   || fail "install identity must not change on branch switch"
@@ -139,9 +139,9 @@ fi
 grep -q 'WorktreeOverrides' "$release_xcconfig" \
   && fail "Release.xcconfig must not include WorktreeOverrides.xcconfig" \
   || pass "Release.xcconfig does not include WorktreeOverrides"
-grep -q '^BUNDLE_IDENTIFIER = com\.buzz\.buzzMobile$' "$release_xcconfig" \
+grep -q '^BUNDLE_IDENTIFIER = com\.fivedive\.chat$' "$release_xcconfig" \
   && pass "Release.xcconfig keeps the production bundle identifier" \
-  || fail "Release.xcconfig must keep BUNDLE_IDENTIFIER = com.buzz.buzzMobile"
+  || fail "Release.xcconfig must keep BUNDLE_IDENTIFIER = com.fivedive.chat"
 grep -q '^APP_DISPLAY_NAME = 5dive$' "$release_xcconfig" \
   && pass "Release.xcconfig keeps the production display name" \
   || fail "Release.xcconfig must keep APP_DISPLAY_NAME = 5dive"
@@ -227,8 +227,7 @@ printf '%s\n' "$clean_out" | grep -q 'com\.fivedive\.app\.feature_work_1' \
 printf '%s\n' "$clean_out" | grep -q 'com\.fivedive\.app\.w_2fast' \
   && pass "cleanup targets letter-prefixed suffixed installs" \
   || fail "cleanup must list w_-prefixed installs, got: $clean_out"
-printf '%s\n' "$clean_out" | grep -q 'mobile\.feature_work_1' || true
-if printf '%s\n' "$clean_out" | grep -Eq '(would uninstall|uninstalling).*xyz\.block\.buzz\.mobile$'; then
+if printf '%s\n' "$clean_out" | grep -Eq '(would uninstall|uninstalling).*com\.fivedive\.app$'; then
   fail "cleanup must never target the production Android app id"
 else
   pass "cleanup preserves the production Android app id"

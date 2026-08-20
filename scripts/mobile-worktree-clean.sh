@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Uninstalls stale worktree-suffixed Buzz debug builds from booted iOS
+# Uninstalls stale worktree-suffixed 5dive debug builds from booted iOS
 # simulators and connected Android devices/emulators. Production installs
-# (com.buzz.buzzMobile / com.fivedive.app, no suffix) are never touched:
+# (com.fivedive.chat / com.fivedive.app, no suffix) are never touched:
 # only identifiers with a worktree suffix appended after the production id
 # are matched. Run `just mobile-clean` (or this script directly); pass
 # --dry-run to list what would be removed without uninstalling.
 set -euo pipefail
 
-ios_prefix="com.buzz.buzzMobile."
+ios_prefix="com.fivedive.chat."
 android_prefix="com.fivedive.app."
 
 dry_run=0
