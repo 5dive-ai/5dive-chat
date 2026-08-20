@@ -215,22 +215,28 @@ class _DmAvatar extends ConsumerWidget {
               ),
             ),
           ),
-          Positioned(
-            right: -1,
-            bottom: -1,
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: _presenceColor(context, presence),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: context.theme.scaffoldBackgroundColor,
-                  width: 1.5,
+          if (showsPresenceDot(
+            agentPubkeys: ref.watch(agentMentionPubkeysProvider(channel.id)),
+            pubkey: otherPubkey,
+            profileIdentifiesAgent: profile?.ownerPubkey != null,
+          ))
+            Positioned(
+              right: -1,
+              bottom: -1,
+              child: Container(
+                key: const ValueKey('dm-tile-presence-dot'),
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: _presenceColor(context, presence),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: context.theme.scaffoldBackgroundColor,
+                    width: 1.5,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

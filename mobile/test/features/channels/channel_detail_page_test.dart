@@ -193,6 +193,7 @@ Widget _buildTestable({
   bool disableAnimations = false,
   RelaySessionNotifier? relaySessionNotifier,
   http.Client? mediaClient,
+  Set<String> agentPubkeys = const {},
 }) {
   final resolvedChannel = channel ?? _testChannel;
   final fakeChannelsNotifier =
@@ -211,6 +212,7 @@ Widget _buildTestable({
         () => userCacheNotifier ?? _FakeUserCacheNotifier(users),
       ),
       profileProvider.overrideWith(() => _FakeProfileNotifier()),
+      knownAgentPubkeysProvider.overrideWithValue(agentPubkeys),
       channelsProvider.overrideWith(() => fakeChannelsNotifier),
       channelDetailsProvider(_channelId).overrideWith(
         (ref) async => ChannelDetails.fromChannel(resolvedChannel),
@@ -404,6 +406,47 @@ void main() {
       expect(presence.style?.fontSize, 14);
       expect(presence.style?.fontWeight, FontWeight.w400);
       expect(find.byTooltip('View members'), findsNothing);
+    });
+
+    testWidgets('renders no presence dot or label in a DM with an agent', (
+      tester,
+    ) async {
+      // DIVE-3624: an agent polls the relay and holds no socket, so presence
+      // can only ever read `offline` for it. The dot is suppressed; the human
+      // control above proves it still renders for everyone else.
+      final dmChannel = Channel(
+        id: _channelId,
+        name: 'DM',
+        channelType: 'dm',
+        visibility: 'private',
+        description: 'Direct message',
+        createdBy: 'self',
+        createdAt: DateTime(2025),
+        memberCount: 2,
+        participants: const ['Self', 'Ada'],
+        participantPubkeys: const ['self', 'ada'],
+        isMember: true,
+      );
+
+      await tester.pumpWidget(
+        _buildTestable(
+          messages: const [],
+          channel: dmChannel,
+          agentPubkeys: const {'ada'},
+          users: const {'ada': UserProfile(pubkey: 'ada', displayName: 'Ada')},
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final avatarFinder = find.byKey(const ValueKey('dm-header-avatar'));
+      expect(avatarFinder, findsOneWidget);
+      expect(
+        tester.widget<MaskedAvatarBadge>(avatarFinder).badge,
+        isNull,
+        reason: 'agent DM header must render no presence dot',
+      );
+      expect(find.byKey(const ValueKey('dm-header-presence')), findsNothing);
+      expect(find.byKey(const ValueKey('dm-header-name')), findsOneWidget);
     });
 
     testWidgets('keeps the Members action for group DMs', (tester) async {

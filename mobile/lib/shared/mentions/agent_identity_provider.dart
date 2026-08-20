@@ -132,6 +132,32 @@ Set<String> agentPubkeysWithProfileOwners({
   ...profileOwnedAgentPubkeys.map((pubkey) => pubkey.toLowerCase()),
 });
 
+/// Whether an online/offline presence dot belongs on [pubkey]'s avatar.
+///
+/// Agents poll the relay instead of holding a resident WebSocket, and the relay
+/// clears a pubkey's presence the moment its last socket closes — so `offline`
+/// is the only answer presence can ever give for an agent, however busy it is.
+/// The dot is a false signal there, so an agent pubkey renders none at all; a
+/// human pubkey keeps its dot unchanged.
+///
+/// [agentPubkeys] is whichever agent-identity set the calling surface has (the
+/// relay-wide [knownAgentPubkeysProvider], or [agentMentionPubkeysProvider] when
+/// there is channel context). [profileIdentifiesAgent] is the second, cheaper
+/// signal: a cached kind:0 profile carrying a verified NIP-OA `ownerPubkey` is
+/// an agent whether or not the relay directory has loaded yet.
+///
+/// A pubkey neither signal can classify keeps its dot, so this never suppresses
+/// a human's presence — it only ever withholds a dot we know to be false.
+bool showsPresenceDot({
+  required Set<String> agentPubkeys,
+  required String? pubkey,
+  bool profileIdentifiesAgent = false,
+}) {
+  if (profileIdentifiesAgent) return false;
+  if (pubkey == null) return true;
+  return !agentPubkeys.contains(pubkey.toLowerCase());
+}
+
 /// Preserves profile labels while filling missing agent mentions from the
 /// relay's agent directory.
 Map<String, String> mentionNamesWithDirectoryLabels({
