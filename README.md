@@ -1,3 +1,27 @@
+> ## 5dive — a fork of Block's Buzz
+>
+> This repository is **5dive**, a rebranded fork of
+> [`block/buzz`](https://github.com/block/buzz), which is licensed under the
+> Apache License 2.0.
+>
+> **Forked at upstream commit `f956e6fe06a76e50cbd8fba1a162482e752e7f1a`,
+> 2026-08-17.** Merge debt is measured from that commit — `git log
+> f956e6fe..upstream/main` is the outstanding set, so keep this line accurate
+> when the fork is rebased.
+>
+> - [`LICENSE`](LICENSE) — Apache 2.0, retained from upstream, unmodified.
+> - [`NOTICE`](NOTICE) — attribution and the trademark position.
+> - [`CHANGES.md`](CHANGES.md) — every file we changed, per Apache-2.0 s4(b),
+>   plus the upstream-brand surfaces still outstanding.
+>
+> Apache-2.0 s6 grants no trademark rights. "Buzz", the bee mark, and Block's
+> other names and logos belong to Block, Inc.; they appear below only because
+> the documentation past this header is still upstream's, describing upstream's
+> product. This fork ships under its own name and mark.
+>
+> Upstream is active and moving fast. Prefer configuration and additive modules
+> over edits to upstream files: every divergence is permanent rebase cost.
+
 <h1 align="center">Buzz 🐝</h1>
 
 <p align="center">
