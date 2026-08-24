@@ -73,7 +73,7 @@ grep -q '^APP_DISPLAY_NAME = 5dive (Fix_Thing-2)$' "$ios" \
 grep -q '^label=Fix_Thing-2$' "$android" \
   && pass "Android label carries the branch label" \
   || fail "Android label wrong: $(cat "$android")"
-grep -q '^appName=Buzz (Fix_Thing-2)$' "$android" \
+grep -q '^appName=5dive (Fix_Thing-2)$' "$android" \
   && pass "Android app name defaults to the branch-labelled name" \
   || fail "Android app name wrong: $(cat "$android")"
 grep -q '^applicationIdSuffix=\.feature_work_1$' "$android" \
@@ -133,7 +133,7 @@ grep -q '^appName=Buzz Huddles$' "$android" \
 grep -q '^applicationIdSuffix=\.huddles_829c$' "$android" \
   && pass "explicit Android debug suffix is persisted" \
   || fail "explicit Android debug suffix wrong: $(cat "$android")"
-grep -q '^APP_DISPLAY_NAME = Buzz (' "$ios" \
+grep -q '^APP_DISPLAY_NAME = 5dive (' "$ios" \
   && ! grep -q 'Buzz Huddles' "$ios" \
   && pass "Android debug overrides do not change the iOS identity" \
   || fail "Android debug overrides must not change iOS identity: $(cat "$ios")"

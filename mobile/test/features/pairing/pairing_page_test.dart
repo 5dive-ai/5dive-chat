@@ -102,7 +102,7 @@ void main() {
       expect(find.text('Confirm desktop code'), findsOneWidget);
       expect(
         find.text(
-          'Make sure the six-digit code matches on both devices. Your Buzz identity will transfer to this device. Only continue if you started this pairing from your desktop.',
+          'Make sure the six-digit code matches on both devices. Your 5dive identity will transfer to this device. Only continue if you started this pairing from your desktop.',
         ),
         findsOneWidget,
       );
@@ -446,7 +446,7 @@ void main() {
       expect(find.text('Confirm desktop code'), findsOneWidget);
       expect(
         find.text(
-          'Make sure the six-digit code matches on both devices. Your Buzz identity will transfer to this device. Only continue if you started this pairing from your desktop.',
+          'Make sure the six-digit code matches on both devices. Your 5dive identity will transfer to this device. Only continue if you started this pairing from your desktop.',
         ),
         findsOneWidget,
       );
@@ -620,7 +620,7 @@ void main() {
       expect(find.text('Confirm desktop code'), findsOneWidget);
       expect(find.textContaining('matches on both devices'), findsOneWidget);
       expect(
-        find.textContaining('Buzz identity will transfer'),
+        find.textContaining('5dive identity will transfer'),
         findsOneWidget,
       );
       expect(find.text('Codes match'), findsOneWidget);
