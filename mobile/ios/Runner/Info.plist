@@ -47,6 +47,8 @@
 	<string>5dive uses Face ID to confirm sensitive identity transfers.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>5dive needs camera access so you can take photos to attach to messages and scan QR codes for device pairing.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>5dive needs microphone access so you can speak in Huddles.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>5dive needs photo library access so you can attach images to messages.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
