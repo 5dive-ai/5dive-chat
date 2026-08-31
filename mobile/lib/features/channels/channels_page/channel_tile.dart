@@ -216,7 +216,14 @@ class _DmAvatar extends ConsumerWidget {
             ),
           ),
           if (showsPresenceDot(
-            agentPubkeys: ref.watch(agentMentionPubkeysProvider(channel.id)),
+            // Relay-wide set, not agentMentionPubkeysProvider: this is a 1:1 DM
+            // avatar, so channel-bot context cannot apply, and the channel-scoped
+            // family provider pulls an async channel-bot lookup into EVERY tile
+            // of a scrolling list. That left a pending timer across a relay
+            // reconnect and tore down the skeleton reveal a frame early
+            // (DIVE-3850). showsPresenceDot's contract names this set as the
+            // right one for a surface without channel context.
+            agentPubkeys: ref.watch(knownAgentPubkeysProvider),
             pubkey: otherPubkey,
             profileIdentifiesAgent: profile?.ownerPubkey != null,
           ))
