@@ -82,7 +82,7 @@ BUZZ_ANDROID_DEBUG_ID_SUFFIX=".huddles_829c" \
 ```
 
 This example produces the debug-only package
-`xyz.block.buzz.mobile.huddles_829c` with the launcher label `Buzz Huddles`.
+`com.fivedive.app.huddles_829c` with the launcher label `Buzz Huddles`.
 The suffix must start with a dot followed by a lowercase letter and may contain
 only lowercase letters, digits, and underscores. Release and profile builds
 ignore these overrides and retain the production package and name.
@@ -112,7 +112,7 @@ For local physical-device development, override the identity and sandbox
 environments in the gitignored `mobile/ios/Flutter/AppOverrides.xcconfig`:
 
 ```xcconfig
-BUNDLE_IDENTIFIER = xyz.block.buzz.mobile
+BUNDLE_IDENTIFIER = com.fivedive.chat
 BUZZ_DEVELOPMENT_TEAM = EYF346PHUG
 BUZZ_IOS_PUSH_ENVIRONMENT = development
 BUZZ_APP_ATTEST_ENVIRONMENT = development

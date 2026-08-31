@@ -107,4 +107,4 @@ PROPERTIES
 
 # The printed identifiers are the generated defaults; on iOS a developer's
 # AppOverrides.xcconfig may override them per variable.
-echo "📱 Worktree ${worktree_name}: iOS label \"${label}\" (${ios_bundle_id}); Android label \"${android_app_name}\" (xyz.block.buzz.mobile${android_suffix})"
+echo "📱 Worktree ${worktree_name}: iOS label \"${label}\" (${ios_bundle_id}); Android label \"${android_app_name}\" (com.fivedive.app${android_suffix})"
