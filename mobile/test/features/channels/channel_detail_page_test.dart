@@ -243,7 +243,6 @@ Widget _buildTestable({
   List<NostrEvent> huddleLifecycle = const [],
   String? huddleCurrentPubkey,
   http.Client? mediaClient,
-  Set<String> agentPubkeys = const {},
   Widget? home,
 }) {
   final resolvedChannel = channel ?? _testChannel;
@@ -270,7 +269,6 @@ Widget _buildTestable({
         () => userCacheNotifier ?? _FakeUserCacheNotifier(users),
       ),
       profileProvider.overrideWith(() => _FakeProfileNotifier()),
-      knownAgentPubkeysProvider.overrideWithValue(agentPubkeys),
       channelsProvider.overrideWith(() => fakeChannelsNotifier),
       channelStarsProvider.overrideWith(_FakeChannelStarsNotifier.new),
       channelMutesProvider.overrideWith(_FakeChannelMutesNotifier.new),
@@ -554,7 +552,7 @@ void main() {
         _buildTestable(
           messages: const [],
           channel: dmChannel,
-          agentPubkeys: const {'ada'},
+          knownAgentPubkeys: const {'ada'},
           users: const {'ada': UserProfile(pubkey: 'ada', displayName: 'Ada')},
         ),
       );
