@@ -156,6 +156,9 @@ gradle="$repo_root/mobile/android/app/build.gradle.kts"
 manifest="$repo_root/mobile/android/app/src/main/AndroidManifest.xml"
 plist="$repo_root/mobile/ios/Runner/Info.plist"
 
+grep -q '^BUNDLE_IDENTIFIER = xyz\.block\.buzz\.dogfood\.mobile$' "$debug_xcconfig" \
+  && pass "Debug.xcconfig defaults to the dogfood bundle identifier" \
+  || fail "Debug.xcconfig must default to xyz.block.buzz.dogfood.mobile"
 grep -q 'WorktreeOverrides.xcconfig' "$debug_xcconfig" \
   && pass "Debug.xcconfig includes WorktreeOverrides" \
   || fail "Debug.xcconfig must include WorktreeOverrides.xcconfig"
@@ -166,6 +169,10 @@ if [[ -n "$worktree_line" && -n "$app_line" && "$worktree_line" -lt "$app_line" 
 else
   fail "Debug.xcconfig must include AppOverrides.xcconfig after WorktreeOverrides.xcconfig"
 fi
+grep -q '^ios_prefix="xyz.block.buzz.dogfood.mobile\."$' "$clean_script" \
+  && pass "cleanup targets the iOS dogfood worktree prefix" \
+  || fail "cleanup must share the iOS dogfood prefix used by worktree overrides"
+
 grep -q 'WorktreeOverrides' "$release_xcconfig" \
   && fail "Release.xcconfig must not include WorktreeOverrides.xcconfig" \
   || pass "Release.xcconfig does not include WorktreeOverrides"
