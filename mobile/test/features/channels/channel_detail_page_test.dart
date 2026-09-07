@@ -670,9 +670,21 @@ void main() {
             .imageUrl,
         isNull,
       );
+      // DIVE-3624 divergence, deliberate: upstream seats the presence dot in a
+      // ClipPath notch cut out of the avatar and always passes a badge, so
+      // upstream's tree renders the mask here too. We suppress the dot for
+      // agent and bot participants, and MaskedAvatarBadge leaves the avatar
+      // whole when there is no badge to make room for — so no ClipPath. The
+      // human-DM case above still asserts findsOneWidget, which pins that this
+      // is the agent/bot path diverging and not the mask being lost.
       expect(
         find.descendant(of: avatarFinder, matching: find.byType(ClipPath)),
-        findsOneWidget,
+        findsNothing,
+      );
+      expect(
+        tester.widget<MaskedAvatarBadge>(avatarFinder).badge,
+        isNull,
+        reason: 'bot-role DM header must render no presence dot',
       );
     });
 
