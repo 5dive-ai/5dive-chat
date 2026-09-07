@@ -214,6 +214,7 @@ class _DmAvatar extends ConsumerWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
+            isAgent: profile?.isAgent == true,
           ),
           if (showsPresenceDot(
             // Relay-wide set, not agentMentionPubkeysProvider: this is a 1:1 DM

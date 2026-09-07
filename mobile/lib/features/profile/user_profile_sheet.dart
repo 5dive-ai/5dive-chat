@@ -157,6 +157,7 @@ class UserProfileSheet extends HookConsumerWidget {
                               child: _ProfileAvatar(
                                 avatarUrl: avatarUrl,
                                 initial: initial,
+                                isAgent: profile?.isAgent == true,
                               ),
                             ),
                           ),
@@ -389,8 +390,13 @@ class _ProfilePresenceChip extends StatelessWidget {
 class _ProfileAvatar extends HookWidget {
   final String? avatarUrl;
   final String initial;
+  final bool isAgent;
 
-  const _ProfileAvatar({required this.avatarUrl, required this.initial});
+  const _ProfileAvatar({
+    required this.avatarUrl,
+    required this.initial,
+    required this.isAgent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -410,17 +416,26 @@ class _ProfileAvatar extends HookWidget {
                   stoppedAnimationUrl.value == animatedAvatar.animationUrl
                   ? null
                   : animatedAvatar.animationUrl,
-        child: ClipOval(
-          child: isPlaying
-              ? ProgressiveAnimatedAvatar(
-                  key: ValueKey(animatedAvatar.animationUrl),
-                  descriptor: animatedAvatar,
-                  fallback: _AvatarFallback(initial: initial),
-                )
-              : AvatarImageContent(
-                  imageUrl: animatedAvatar?.posterUrl ?? avatarUrl,
-                  fallback: _AvatarFallback(initial: initial),
-                ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final avatar = isPlaying
+                ? ProgressiveAnimatedAvatar(
+                    key: ValueKey(animatedAvatar.animationUrl),
+                    descriptor: animatedAvatar,
+                    fallback: _AvatarFallback(initial: initial),
+                  )
+                : AvatarImageContent(
+                    imageUrl: animatedAvatar?.posterUrl ?? avatarUrl,
+                    fallback: _AvatarFallback(initial: initial),
+                  );
+            if (!isAgent) return ClipOval(child: avatar);
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(
+                constraints.biggest.shortestSide * 0.3,
+              ),
+              child: avatar,
+            );
+          },
         ),
       ),
     );
